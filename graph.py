@@ -1,4 +1,7 @@
 # Graph rep: Collection of nodes + Dict<<Adjacency list>>
+from itertools import count
+
+
 graph = {
     'a' : ['c', 'b'],
     'b' : ['d'],
@@ -88,13 +91,96 @@ def makeGraphAdjList(edges):
 print(makeGraphAdjList(edges))
 
 
-def hasPathRecursive(graph, src, dest, visited = [])->bool:
-    if src in visited: return False
+# def hasPathRecursive(graph, src, dest, visited = [])->bool:
+#     if src is dest: return True
+#     if src in visited: return False
+
+#     visited.append(src)
+#     for i in graph[src]:
+#         hasPathRecursive(graph, i, dest, visited)
+#     return False
+    
+# print (hasPathRecursive(makeGraphAdjList(edges), 'i','k', []))
+
+def undirectedPath(edges, node, node2):
+    graph = makeGraphAdjList(edges)
+    tr_set = set()
+    return hasPathRec(graph, node, node2, tr_set)
+
+def hasPathRec(graph, src, dest, st):
     if src is dest: return True
-    visited.append(src)
+    if src in st: return False
+    
+    st.add(src)
     for i in graph[src]:
-        hasPathRecursive(graph, i, dest, visited)
+        if hasPathRec(graph, i, dest, st): return True
     return False
     
-print (hasPathRecursive(graph, 'e','b', []))
+print(undirectedPath(edges, 'i', 'm'))
+    
+# Connected components problem
+def connCompCount(graph):
+    count = 0
+    visited = set()
+    for i in graph:
+        if explore(graph, i, visited): count+= 1
+    return count
 
+def explore(graph, node, visited):
+    # do a recursive dfs for every node in graph
+    # Doesnt have to be recursive could as well be iterative
+    if node in visited: return False
+    visited.add(node)
+    for neighbor in graph[node]:
+        explore(graph, neighbor, visited)
+    return True
+print(connCompCount(makeGraphAdjList(edges))) #should return 2 and does
+
+
+# connected components
+def countConnComp(graph):
+    count = 0
+    visited = set()
+    for i in graph:
+        if explGraph(graph, i, visited):
+            count += 1
+    return count
+
+def explGraph(graph, node, visited):
+    if node in visited: return False
+    visited.add(node)
+    
+    for neighbor in graph[node]:
+        explGraph(graph, neighbor, visited)
+    return True
+
+print(countConnComp(makeGraphAdjList(edges)))
+
+def largestComponent(graph):
+    largest = 0
+    visited = set()
+    for i in graph:
+        size = searchLargestComp(graph, i, visited)
+        if size > largest:
+            largest = size
+    return largest
+
+def searchLargestComp(graph, node, visited):
+    if node in visited: return 0
+    visited.add(node)
+    count = 1
+    for neighbor in graph[node]:
+        count += searchLargestComp(graph, neighbor, visited)
+    return count
+
+print(largestComponent(makeGraphAdjList(edges)))
+
+print(largestComponent({
+    '0':['8','1','5'],
+    '1':['0'],
+    '5':['0','8'],
+    '8':['0', '5'],
+    '2':['3','4'],
+    '3':['2','4'],
+    '4':['3', '2']
+}))
