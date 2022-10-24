@@ -84,9 +84,9 @@ def makeGraphAdjList(edges):
         graph_list[a].append(b)
         graph_list[b].append(a)
         
-    return graph_list
-        
+    return graph_list        
 print(makeGraphAdjList(edges))
+
 
 def hasPathRecursive(graph, src, dest, visited = [])->bool:
     if src in visited: return False
