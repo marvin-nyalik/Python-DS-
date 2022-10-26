@@ -121,3 +121,4 @@ def treeMin(root: Node):
     
     return min(root.val, lv, rv)
 print(treeMin(two))
+

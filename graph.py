@@ -1,6 +1,7 @@
 # Graph rep: Collection of nodes + Dict<<Adjacency list>>
 from itertools import count
 
+# b - a - c - e
 
 graph = {
     'a' : ['c', 'b'],
@@ -184,3 +185,118 @@ print(largestComponent({
     '3':['2','4'],
     '4':['3', '2']
 }))
+
+# finding the shortest path to a node
+def shortestDist(graph, src, dest):
+    queue = [(src,0)]
+    visited = set()
+    visited.add(src)
+    while queue:
+        y = queue.pop(0)
+        node, dist = y
+        if node is dest:
+            return dist
+        for n in graph[node]:
+            if n not in visited: visited.add(n)
+            queue.append((n, dist + 1))
+    return -1
+
+print(shortestDist(graph, 'b', 'e'))
+
+# The island count
+g = [
+    ['0', '1', '0','0','1'],
+    ['1', '0', '0','1','1'],
+    ['1', '0', '1','1','1']
+]
+
+# def islandCount(grid):
+#     count = 0
+#     visit = set()
+#     for r in range(len(grid)):
+#         for c in range(len(grid[r])):
+#             if explore(grid, r, c, visit): count += 1
+            
+#     return count  
+
+# def explore(grid, r, c, visit):
+#     rowInbounds = 0 <= r and r <= len(grid)
+#     colInbounds = 0 <= c and c <= len(grid[r])
+    
+#     if not (rowInbounds and colInbounds): return False
+#     if grid[r][c] is 'W': return False
+#     pos = str(r) + ',' + str(c)
+
+#     if pos in visit: return False
+#     visit.add(pos)
+    
+#     explore(grid, r-1, c, visit)
+#     explore(grid, r+1, c, visit)
+#     explore(grid, r, c-1, visit)
+#     explore(grid, r, c+1, visit)
+    
+#     return True
+
+    
+def numIslands(grid) -> int:
+    count = 0
+    visited = set()
+    for row in range(len(grid)):
+        for col in range(len(grid[row])):
+            if explore(grid, row, col, visited): count += 1
+    return count
+    
+def explore(grid, row, col, visited):
+    rowInbound = 0 <= row and row <= len(grid)
+    colInbound = 0 <= col and col <= len(grid[0])
+    bound = rowInbound and colInbound
+    if not bound: return False
+    if grid[row][col] is "0": return False
+    position = str(row) + ',' + str(col)
+    if position in visited: return False
+    
+    visited.add(position)
+    
+    explore(grid, row+1, col, visited)
+    explore(grid, row-1, col, visited)
+    explore(grid, row, col+1, visited)
+    explore(grid, row, col-1, visited)
+    
+    return True
+
+g2 = [
+  ["1","1","1","0","0"],
+  ["1","1","0","1","0"],
+  ["1","1","0","0","0"],
+  ["0","0","0","0","0"]
+    ]
+print(numIslands(g2))
+
+def minIsland(grid):
+    min_island = float('inf')
+    visited = set()
+    for row in range(len(grid)):
+        for col in range(len(grid[row])):
+            if findMinIsland(grid, row, col, visited) < min_island and findMinIsland(grid, row, col, visited) > 0:
+                    min_island = findMinIsland(grid, row, col, visited)
+    return min_island
+
+def findMinIsland(g, r, c, visited):
+    rowInbound = 0 <= r and r <= len(g)
+    colInbound = 0 <= c and c <= len(g[r])
+    
+    size = 1
+    if not (rowInbound and colInbound): return 0
+    if g[r][c] is '0': return 0
+    
+    pos = str(r) + "," + str(c)
+    if pos in visited: return 0
+    visited.add(pos)
+    
+    size += findMinIsland(g, r+1, c, visited)
+    size += findMinIsland(g, r-1, c, visited)
+    size += findMinIsland(g, r, c+1, visited)
+    size += findMinIsland(g, r, c-1, visited)
+    
+    return size
+print(minIsland(g2))
